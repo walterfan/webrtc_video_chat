@@ -48,18 +48,30 @@ conference-info
 
 ```
 
+Role
+
+Name |	Description
+-----|-----
+Moderator	| Host of the meeting
+None| the absence of a role)
+Participant | Attendee
+Visitor | Guest
+
 
 ## Room Service
+
 Like XMPP MUC(Multi User Chat) - [XEP-0045: Multi-User Chat](https://xmpp.org/extensions/xep-0045.html).
-We use Json to exchange SDP, Command and other message between two peers
+We use Json instead of XMPP to exchange SDP, Command and other message between two peers
 
 
 * Message format:
 
 ```
 {
-"type": $type
-"data": $payload
+  "type": $type,
+  "data": $payload,
+  "from": $from_addr
+  "to": $to_addr
 }
 ```
 
