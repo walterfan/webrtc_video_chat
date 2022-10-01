@@ -1,4 +1,4 @@
-# webrtc_video_chat
+# WebRTC Video Chat
 
 webrtc video chat for p2p call
 
@@ -7,6 +7,8 @@ webrtc video chat for p2p call
 ## Domain Objects
 
 * Room, Conference, Meeting
+* Group
+* Channel
 * User, Attendee, Participant, Host/Moderator, Attendee, Visitor/Guest
 * Session
 * Device, Endpoint
@@ -108,3 +110,9 @@ such as:
 * message
 * publish
 * subscribe
+
+# Publish-Subscribe Framework
+
+Inspired by [XEP-0060: Publish-Subscribe](https://xmpp.org/extensions/xep-0060.html)
+
+We can publish messsage or media stream to a group or channel, also can subscribe message or media stream of a group or channel
