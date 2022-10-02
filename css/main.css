@@ -1,7 +1,7 @@
 .rtc-field { font-size: 12px; color: blue;  vertical-align: top; }
 .recvMsgTxt {
   width: 640px;
-  height: 120px;
+  height: 80px;
   white-space: normal;
   overflow: auto;
   border: solid 1px #cccccc;
@@ -15,17 +15,10 @@
   border: solid 1px #cccccc;
   margin-bottom: 5px
 }
-.jmpMessage {
-  width: 640px;
-  height: 60px;
-  white-space: normal;
-  overflow: auto;
-  border: solid 1px #cccccc;
-  margin-bottom: 5px
-}
+
 .cfgMessage {
   width: 640px;
-  height: 120px;
+  height: 80px;
   white-space: normal;
   overflow: auto;
   border: solid 1px #cccccc;

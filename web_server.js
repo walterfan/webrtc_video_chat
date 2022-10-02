@@ -190,7 +190,7 @@ var wssServer = new webSocketServer({
 function broadcastMessage(roomId, data, self) {
     var peers = connections[roomId].peers;
     var i, c;
-    for(i = 0; i < rooms.length; i++)
+    for(i = 0; i < peers.length; i++)
     {
         c = peers[i];
         if(c != self)

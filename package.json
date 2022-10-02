@@ -3,7 +3,6 @@
     "version": "0.1.0",
     "description": "video_chat_demo",
     "main": "web_server.js",
-
     "repository": {
         "type": "git",
         "url": "https://github.com/walterfan/webrtc_remote_sharing"
@@ -13,26 +12,24 @@
     ],
     "author": "Walter Fan",
     "license": "BSD",
-
     "bugs": {
         "url": "https://github.com/walterfan/webrtc_video_chat/issues"
     },
     "homepage": "https://github.com/walterfan/webrtc_video_chat",
-
     "scripts": {
-      "start": "nodemon web_server.js",
-      "test": "jest"
+        "start": "nodemon web_server.js",
+        "test": "jest"
     },
     "dependencies": {
-      "body-parser": "^1.18.3",
-      "cors": "^2.8.5",
-      "express": "^4.16.3",
-      "log4js": "^6.3.0",
-      "nc": "^1.0.3",
-      "nodemon": "^1.17.5",
-      "websocket": "1.0.22"
+        "body-parser": "^1.18.3",
+        "cors": "^2.8.5",
+        "express": "^4.16.3",
+        "log4js": "^6.3.0",
+        "nc": "^1.0.3",
+        "nodemon": "^1.17.5",
+        "websocket": "1.0.22"
     },
     "devDependencies": {
-      "jest": "^28.1.0"
+        "jest": "^28.1.0"
     }
 }

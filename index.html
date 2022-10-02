@@ -7,23 +7,253 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title> WebRTC Examples</title>
-<script type="text/javascript" src="./script/js/adapter.min.js" ></script>
-<script type="text/javascript" src="./script/js/jquery.min.js" ></script>
-<script type="text/javascript" src="./script/js/jquery.blockUI.min.js" ></script>
-<script type="text/javascript" src="./script/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="./script/js/bootbox.min.js"></script>
-<script type="text/javascript" src="./script/js/spin.min.js"></script>
-<script type="text/javascript" src="./script/js/toastr.min.js"></script>
+<script type="text/javascript" src="./js/adapter.min.js" ></script>
+<script type="text/javascript" src="./js/jquery.min.js" ></script>
+<script type="text/javascript" src="./js/jquery.blockUI.min.js" ></script>
+<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/bootbox.min.js"></script>
+<script type="text/javascript" src="./js/spin.min.js"></script>
+<script type="text/javascript" src="./js/toastr.min.js"></script>
 
-<link rel="stylesheet" href="./script/css/bootstrap.min.css" type="text/css"/>
-<link rel="stylesheet" href="./script/css/font-awesome.min.css" type="text/css"/>
-<link rel="stylesheet" href="./script/css/toastr.min.css" type="text/css"/>
-<link rel="stylesheet" href="./script/css/main.css" type="text/css"/>
+<link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css"/>
+<link rel="stylesheet" href="./css/font-awesome.min.css" type="text/css"/>
+<link rel="stylesheet" href="./css/toastr.min.css" type="text/css"/>
+<link rel="stylesheet" href="./css/main.css" type="text/css"/>
 
 </head>
 <body>
 
-    TBD...
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="jumbotron">
+                  <h1>WebRTC Video Chat Example</h1>
+                  <p> just for testing purpose.</p>
+                </div>
+                <div > <!-- form div start -->
+                <div class="form-group">
+                  <div>
+                      <label for="roomId">Room Id: </label>
+                      <input type="text" id="roomId" value="20220510"/>
+    
+                      <label>User Name: </label>
+                      <input type="text" id="userName" value="Alice"/>
+    
+                      <label>Password: </label>
+                      <input type="text" id="password" value="P@ass1234"/>
+    
+                      <label>User Email: </label>
+                      <input type="text" id="userMail" value="alice@qa.webex.com"/>
+                  </div>
+                </div>
+    
+                <div class="form-group">
+                    <div>
+                        <button class="btn btn-success" autocomplete="off" id="joinRoom">Join Room</button>
+                        <button class="btn btn-warning" autocomplete="off" id="leaveRoom">Leave Room</button>
+                        <button class="btn btn-default" autocomplete="off" id="startMedia">Start Media</button>
+                        <button class="btn btn-default" autocomplete="off" id="stopMedia">Stop Media</button>
+                        <button class="btn btn-success" autocomplete="off" id="call">Call</button>
+                        <button class="btn btn-warning" autocomplete="off" id="hungup">Hungup</button>
+    
+    <!--                    <button class="btn btn-default" autocomplete="off" id="testConnection">Test Connection</button>-->
+    
+                        <input type="radio" id="p2pRadio" name="topology" value="p2p" checked>
+                        <label class="control-label" for="p2pRadio">P2P</label>
+                        <input type="radio" id="sfuRadio" name="topology" value="sfu" >
+                        <label class="control-label" for="p2pRadio">SFU</label>
+    
+                    </div>
+                </div>
+
+    
+                <div class="form-group">
+                  <div>
+                    <input type="checkbox" id="mainAudio" name="mainAudio" value="mainAudio">
+                    <label for="mainAudio"> Main Audio</label>
+    
+                    <input type="checkbox" id="mainVideo" name="mainVideo" value="mainVideo" checked>
+                    <label for="mainVideo"> Main Video</label>
+    
+                    <input type="checkbox" id="slideVideo" name="slideVideo" value="slideVideo">
+                    <label for="slideVideo"> Sharing Video</label>
+    
+                    <input type="checkbox" id="slideAudio" name="slideAudio" value="slideAudio">
+                    <label for="slideAudio"> Sharing Audio</label>
+    
+                    <input type="checkbox" id="simulcast" name="simulcast" value="simulcast">
+                    <label for="simulcast"> simulcast</label>
+                      &nbsp;
+                      <div>
+                          <label id="signalstate">Signal State: empty</label>
+                      &nbsp;&nbsp;
+                          <label id="iceconnectionstate">IceConnection State: empty</label>
+                      </div>
+    
+                  </div>
+                </div>
+    
+
+    
+                <div class="form-group">
+                    <div id="videoDiv">
+                        <table border="1" style="text-align:center;width:1024px; vertical-align: text-top;">
+                            <tr>
+                                <th colspan="2" style="width:800px;text-align: center">
+
+                                  Participants: <b id = "attendeeCount">0</b>
+                                </th>
+                                <th>
+                                    <div>
+                                        Resolution:
+                                        <select id="video_size">
+                                            <option value="90p">90p</option>
+                                            <option value="180p">180p</option>
+                                            <option value="360p">360p</option>
+                                            <option value="720p" selected="selected">720p</option>
+                                            <option value="1080p">1080p</option>
+                                            <option value="2k">2k</option>
+                                            <option value="4k">4k</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        FrameRate:
+                                        <input id="frame_rate" value="15" size="6"> per second
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td width="200px" align= "left">
+
+                                  <div><b>Microphone:</b>
+                                    <select style="width: 100px" id="mic_sel"></select>
+                                    <button id="muteAudioBtn">mute</button>
+                                 </div>
+                                </td>
+                                <td width= "200px" align= "left">
+
+                                  <div><b>Camera:</b>
+                                    <select id="cam_sel"></select>
+                                    <button id="muteVideoBtn">mute</button>
+                                  </div>
+                                </td>
+                                <td width="200px" id="video_status"><b>Sending Video</b></td>
+                            </tr>
+                            <tr>
+                              <td colspan="2" style="width:200px">Local Video</td>
+                              <td style="width:400px">Remote Video</td>
+                            </tr>
+                            <tr>
+    
+                                <td colspan="2" id="selfVideoPos" >
+                                  <div id="selfVideo">
+    
+                                </div></td>
+                                <td  id="liveVideoPos" ><div id="liveVideo"></div> </td>
+    
+                            </tr>
+    
+                        </table>
+    
+
+                    </div>
+               </div>
+               <div class="form-group">
+                <label for="cfgMessage" class="col-sm-2 control-label">Configuration: </label>
+                <div class="col-sm-10">
+                  <textarea id="cfgMessage" class="cfgMessage"></textarea>
+                  <button id="savebtn">Save</button>
+                </div>
+    
+              </div>
+    
+              <div class="form-group ">
+                <label for="recvMsgTxt" class="col-sm-2 control-label">Received Message: </label>
+                <div class="col-sm-10">
+                  <textarea id="recvMsgTxt" class=" col-sm-10 recvMsgTxt"></textarea>
+                </div>
+    
+              </div>
+    
+              <div class="form-group ">
+                <label for="sendMsgTxt" class="col-sm-2 control-label">Message To Send: </label>
+                <div class="col-sm-10">
+                  <textarea id="sendMsgTxt" class=" col-sm-10 sendMsgTxt"></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <button class="btn btn-default" autocomplete="off" id="sendMsgBtn">Send Message</button></div>
+                  <div class="col-sm-2">
+                    <input type="radio" id="wsRadio" name="messageTransport" value="ws" checked>
+                    <label class="control-label" for="wsRadio">WebSocket</label>
+                    </div>
+                  <div class="col-sm-2">
+                      <input type="radio" id="dcRadio" name="messageTransport" value="dc">
+                      <label class="control-label" for="dcRadio">DataChannel</label>
+                  </div>
+                </div>
+              </div>
+    
+                </div> <!-- form div end -->
+    
+                <div class="statsContainer">
+                    <h4>--- statistics ---</h4>
+                    <button id="clearStats" >clear</button>
+                    <button id="displayStats" >hide</button>
+                    <div id="statsDiv" >
+                      <ul id="statisContent">
+                      </ul>
+                    </div>
+                  </div>
+    
+                <div class="note">
+                <hr/>
+                <h4>--- logs ---</h4>
+                <button id="clearLog" >clear</button>
+                <button id="displayLog">hide</button>
+                  <hr/>
+                  <div id="logDiv">
+
+                      <ul id="logContent">
+                      </ul>
+                  </div>
+                </div>
+        </div>
+    
+        <hr>
+        <center class="footer">
+            &copy; 2022 Walter Fan
+        </center>
+    </div>
+    <script>
+        let pc_config =  {
+            "ice_server_url": "stun:10.224.85.48:5004",
+            "room_url": "wss://10.224.85.48:8003",
+        };
+        const cfgMsgElement = document.getElementById("cfgMessage");
+        window.onload = function init() {
+            var cfgValue = JSON.parse(localStorage.getItem("pc_config"));
+            if(cfgValue) {
+              cfgMsgElement.value = cfgValue;
+            } else {
+              cfgMsgElement.value = JSON.stringify(pc_config, null, 2);
+            }
+            document.getElementById("roomId").value = (new Date()).toISOString().slice(4, 16).replace(/[-T:]/g,'')
+            //document.getElementById("p2pRadio").checked = true;
+            document.getElementById("userName").value = document.getElementById("userName").value + Math.floor((Math.random() * (0xfe) + 1)) * 256;
+            //WT.enumerateDevices();
+        }
+    </script>
+        <script type="text/javascript" src="app/util.js" ></script>
+        <script type="text/javascript" src="app/metrics.js" ></script>
+        <script type="text/javascript" src="app/log.js" ></script>
+        <script type="text/javascript" src="app/room.js"></script>
+        <script type="text/javascript" src="app/call.js"></script>
+        <script type="text/javascript" src="app/client.js"></script>
+        <script type="text/javascript" src="app/ui.js"></script>
+    </div>
 
 </body>
 </html>
