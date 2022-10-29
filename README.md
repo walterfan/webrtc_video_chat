@@ -1,6 +1,11 @@
 # WebRTC Video Chat
 
-webrtc video chat for p2p call
+webrtc video chat and sharing mini app
+
+1) npm install
+2) npm start
+3) open http://<your_host_addr>:8043
+
 
 # Signal
 

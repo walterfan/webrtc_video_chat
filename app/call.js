@@ -205,9 +205,31 @@
               }
         },
 
-        buildGumOptions: function (mainAudioChecked, mainVideoChecked, w, h, fRate) {
+        buildGdmOptions: function(selectedMediaFamilies, w, h, fRate) {
+            let gdmOptions = {};
+            if (selectedMediaFamilies.sharingAudio) {
+                gdmOptions['audio'] =  {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    sampleRate: 44100
+                };
+            }
+
+            if (selectedMediaFamilies.sharingVideo) {
+                gdmOptions['video'] ={
+                    width: {
+                        max: w
+                    },
+                    height: {
+                        max: h
+                    }
+                };
+            }
+            return gdmOptions;
+        },
+        buildGumOptions: function (selectedMediaFamilies, w, h, fRate) {
             let gumOptions = {};
-            if (mainAudioChecked) {
+            if (selectedMediaFamilies.mainAudio) {
                 gumOptions['audio'] =  {
                     deviceId: document.getElementById('mic_sel').value,
                     echoCancellation: true,
@@ -216,7 +238,7 @@
                 };
             }
 
-            if (mainVideoChecked) {
+            if (selectedMediaFamilies.mainVideo) {
                 gumOptions['video'] ={
                     deviceId: document.getElementById('cam_sel').value,
                     width: {
@@ -229,13 +251,12 @@
             }
             return gumOptions;
         },
-
-        startMedia: async function() {
-            console.log("startMedia...");
+        captureMicOrCamera: async function(selectedMediaFamilies) {
             let captureStream;
             let resolution = WT.getResolution();
             let frameRate = +document.getElementById('frame_rate').value;
-            let gumOptions = WT.call.buildGumOptions(document.getElementById('mainAudio').checked, document.getElementById('mainVideo').checked, resolution.w, resolution.h, frameRate);
+
+            let gumOptions = WT.call.buildGumOptions(selectedMediaFamilies, resolution.w, resolution.h, frameRate);
             console.log("gumOptions: ", gumOptions);
             try {
                 captureStream = await navigator.mediaDevices.getUserMedia(gumOptions);
@@ -255,6 +276,50 @@
                 WT.call.handleUserMediaError(ex);
             }
             return captureStream;
+        },
+
+        captureScreen: async function(selectedMediaFamilies) {
+            let captureStream;
+            let resolution = WT.getResolution();
+            let frameRate = +document.getElementById('frame_rate').value;
+
+            let gdmOptions = WT.call.buildGdmOptions(selectedMediaFamilies, resolution.w, resolution.h, frameRate);
+            console.log("gdmOptions: ", gdmOptions);
+            try {
+                captureStream = await navigator.mediaDevices.getDisplayMedia(gdmOptions);
+
+                WT.call.handleUserMedia(captureStream);
+
+                if (WT.call._pc) {
+                    for(const audioTrack of captureStream.getAudioTracks()) {
+                        WT.call._pc.getSenders()[0].replaceTrack(audioTrack);
+                    }
+                    for(const videoTrack of captureStream.getVideoTracks()) {
+                        WT.call._pc.getSenders()[1].replaceTrack(videoTrack);
+                    }
+                }
+              } catch (ex) {
+                console.error("handleUserMedia ", ex);
+                WT.call.handleUserMediaError(ex);
+            }
+            return captureStream;
+        },
+        startMedia: async function() {
+            console.log("startMedia...");
+
+            let selectedMediaFamilies = {
+                "mainAudio": document.getElementById('mainAudio').checked,
+                "mainVideo": document.getElementById('mainVideo').checked,
+                "sharingAudio": document.getElementById('sharingAudio').checked,
+                "sharingVideo": document.getElementById('sharingVideo').checked
+            };
+
+            if (selectedMediaFamilies.mainAudio || selectedMediaFamilies.mainVideo) {
+                WT.call.captureMicOrCamera(selectedMediaFamilies);
+            }
+            if (selectedMediaFamilies.sharingAudio || selectedMediaFamilies.sharingVideo) {
+                WT.call.captureScreen(selectedMediaFamilies);
+            }
         },
 
         stopMedia: function() {
