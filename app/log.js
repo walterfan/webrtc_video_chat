@@ -6,21 +6,6 @@
     $.extend(log, {
         _logSaver: null,
 
-        makeLogString: function (arguments) {
-            if(!arguments.length){
-                return "";
-            }
-            else{
-                var msg = "";
-                for(var i = 0; i < arguments.length; i++){
-                    msg += arguments[i];
-                    msg += " ";
-                }
-                return msg;
-            }
-
-        },
-
         _getLogPrefix: function() {
             var date = new Date();
             var strTime = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "." + date.getMilliseconds();
@@ -53,7 +38,7 @@
 
             return prefix;
         },
-        //added by walter for troubleshooting
+
         setLogSaver: function(saver) {
             this._logSaver = saver;
         },

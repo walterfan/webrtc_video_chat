@@ -27,7 +27,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="jumbotron">
-                  <h3>WebRTC Video Chat App </h3>
+                  <h3>WebRTC Video Chat App v1</h3>
+                  <p> - Walter Fan 2020.10</p>
                 </div>
                 <div > <!-- form div start -->
                 <div class="form-group">
@@ -96,7 +97,7 @@
     
                 <div class="form-group">
                     <div id="videoDiv">
-                        <table border="1" style="text-align:center;width:1024px; vertical-align: text-top;">
+                        <table border="1" style="text-align:center;vertical-align: text-top;">
                             <tr>
                                 <th colspan="2" style="width:800px;text-align: center">
 
@@ -161,7 +162,7 @@
                 <label for="cfgMessage" class="col-sm-2 control-label">Configuration: </label>
                 <div class="col-sm-10">
                   <textarea id="cfgMessage" class="cfgMessage"></textarea>
-                  <button id="savebtn">Save</button>
+                  <button id="savebtn">Save Configuration</button>
                 </div>
     
               </div>
@@ -178,12 +179,13 @@
                 <label for="sendMsgTxt" class="col-sm-2 control-label">Message To Send: </label>
                 <div class="col-sm-10">
                   <textarea id="sendMsgTxt" class=" col-sm-10 sendMsgTxt"></textarea>
+                  <button autocomplete="off" id="sendMsgBtn">Send Message</button>
                 </div>
               </div>
               <div class="form-group">
                 <div class="row">
                   <div class="col-sm-2">
-                    <button class="btn btn-default" autocomplete="off" id="sendMsgBtn">Send Message</button></div>
+                  </div>
                   <div class="col-sm-2">
                     <input type="radio" id="wsRadio" name="messageTransport" value="ws" checked>
                     <label class="control-label" for="wsRadio">WebSocket</label>
@@ -202,7 +204,7 @@
                     <button id="clearStats" >clear</button>
                     <button id="displayStats" >hide</button>
                     <div id="statsDiv" >
-                      <ul id="statisContent">
+                      <ul id="statsContent">
                       </ul>
                     </div>
                   </div>
@@ -239,7 +241,7 @@
             } else {
               cfgMsgElement.value = JSON.stringify(pc_config, null, 2);
             }
-            document.getElementById("roomId").value = (new Date()).toISOString().slice(4, 16).replace(/[-T:]/g,'')
+            document.getElementById("roomId").value = (new Date()).toISOString().slice(0, 11).replace(/[-T:]/g,'')
             //document.getElementById("p2pRadio").checked = true;
             document.getElementById("userName").value = document.getElementById("userName").value + Math.floor((Math.random() * (0xfe) + 1)) * 256;
             //WT.enumerateDevices();

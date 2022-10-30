@@ -62,7 +62,7 @@
             return;
           }
           var strMsg = JSON.stringify(msg);
-          weblog("WS --> send: " + strMsg);
+          weblog("WS --> send: " + strMsg.replace(/\\r\\n/g, "<br/>"));
           if(this.connected) {
             this.m_roomConnection.send(strMsg);
           } else {

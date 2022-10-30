@@ -432,6 +432,7 @@
                 }
                 remote_channel.onmessage = function(event) {
                     weblog("remote_channel got ", event.data);
+                    WT.showMessage(event.data);
 
                 }
                 remote_channel.onclose = function(event) {

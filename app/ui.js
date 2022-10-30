@@ -169,7 +169,7 @@
 
 
     WT.showMessage = function(msg) {
-        weblog("<---" + msg);
+        weblog("<---" + msg.replace(/\\r\\n/g, "<br />"));
         this.recvMsgTxt.innerHTML += "\n" + msg + "\n";
         this.recvMsgTxt.scrollTop = this.recvMsgTxt.scrollHeight - this.recvMsgTxt.clientHeight;
     }

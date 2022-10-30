@@ -22,12 +22,12 @@ function weblog() {
     logContent.appendChild(elem);
 }
 
-function UpdateWebstatis(msg, eleId) {
+function updateWebStats(msg, eleId) {
 
     let subContent = document.getElementById(eleId);
     if (subContent === null){
         
-        let content = document.getElementById('statisContent');
+        let content = document.getElementById('statsContent');
         subContent = document.createElement("li");
         subContent.classList.add('statsItem');
         subContent.id = eleId;
