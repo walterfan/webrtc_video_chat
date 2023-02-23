@@ -1,0 +1,1 @@
+docker build -t=walterfan/webrtc-video-chat:v1 ./webrtc_service

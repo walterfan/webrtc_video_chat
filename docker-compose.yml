@@ -1,0 +1,64 @@
+version: "3"
+services:
+  chrome:
+    image: selenium/node-chrome:4.8.0-20230123
+    shm_size: 2gb
+    ports:
+      - "5900:5900"
+      - "7900:7900"
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    volumes:
+      - ${PWD}/video:/tmp/video
+  edge:
+    image: selenium/node-edge:4.8.0-20230123
+    shm_size: 2gb
+    ports:
+      - "5901:5900"
+      - "7901:7900"
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    volumes:
+      - ${PWD}/video:/tmp/video
+  firefox:
+    image: selenium/node-firefox:4.8.0-20230123
+    shm_size: 2gb
+    ports:
+      - "5902:5900"
+      - "7902:7900"
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    volumes:
+      - ${PWD}/video:/tmp/video
+  selenium-hub:
+    image: selenium/hub:4.8.0-20230123
+    container_name: selenium-hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+  webrtc-service:
+    build: ./webrtc_service/
+    container_name: webrtc_service
+    expose:
+        - "8001"
+        - "8002"
+        - "8003"
+        - "8043"
+    ports:
+        - "8001:8001"
+        - "8002:8002"
+        - "8003:8003"
+        - "8043:8043"
