@@ -13,7 +13,9 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     volumes:
-      - ${PWD}/media:/tmp/media
+      - ${PWD}/media:/home/seluser/media
+      - ${PWD}/logs:/home/seluser/logs
+      - ${PWD}/logs:/home/seluser/Downloads
   edge:
     image: selenium/node-edge:4.8.0-20230123
     shm_size: 2gb
@@ -27,8 +29,9 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     volumes:
-      - ${PWD}/media:/tmp/media
-      - ${PWD}/logs:/tmp/logs
+      - ${PWD}/media:/home/seluser/media
+      - ${PWD}/logs:/home/seluser/logs
+      - ${PWD}/logs:/home/seluser/Downloads
   firefox:
     image: selenium/node-firefox:4.8.0-20230123
     shm_size: 2gb
@@ -42,8 +45,9 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     volumes:
-      - ${PWD}/media:/tmp/media
-      - ${PWD}/logs:/tmp/logs
+      - ${PWD}/media:/home/seluser/media
+      - ${PWD}/logs:/home/seluser/logs
+      - ${PWD}/logs:/home/seluser/Downloads
   selenium-hub:
     image: selenium/hub:4.8.0-20230123
     container_name: selenium-hub
@@ -65,5 +69,7 @@ services:
         - "8003:8003"
         - "8043:8043"
     volumes:
-      - ${PWD}/media:/tmp/media
-      - ${PWD}/logs:/tmp/logs
+      - ${PWD}/media:/home/seluser/media
+      - ${PWD}/logs:/home/seluser/logs
+      - ${PWD}/logs:/home/seluser/Downloads
+      - ${PWD}/logs:/opt/webrtc_video_chat/logs
