@@ -98,8 +98,8 @@ Array.prototype.remove = function() {
 const logger = log4js.getLogger("thinclient");
 const webConsoleLogger = log4js.getLogger("webconsole");
 
-const certificate = fs.readFileSync('./certs/domain.crt', 'utf8');
-const privateKey  = fs.readFileSync('./certs/domain.key', 'utf8');
+const certificate = fs.readFileSync('./certs/server.crt', 'utf8');
+const privateKey  = fs.readFileSync('./certs/server.key', 'utf8');
 
 const credentials = {key: privateKey, cert: certificate};
 const express = require('express');
