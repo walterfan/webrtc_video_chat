@@ -104,9 +104,11 @@ def start_chrome(c, dryrun=False):
 
 def build_chrome_cmd(chrome_path, video_file):
     chrome_options = [
+        "--ignore-certificate-errors",
+        "--disable-web-security",
+        "--no-default-browser-check",
         "--enable-logging=stderr --v=1",
         "--vmodule=*/webrtc/*=1",
-        "--disable-web-security"
         "--use-fake-device-for-media-stream",
         "--use-file-for-fake-video-capture={}".format(video_file)
     ]
