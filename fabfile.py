@@ -4,9 +4,16 @@ from fabric import task
 from fabric import Connection
 import time
 import json
-
 import logging
 
+CHROME_OPTIONS = """
+    --enable-logging=stderr
+    --v=1
+    --vmodule="*/webrtc/*=1"
+    --use-fake-device-for-media-stream
+    --use-file-for-fake-video-capture={}
+    > chrome_debug.log 2>&1
+"""
 
 code_dir = os.getenv("WEBRTC_SRC")
 test_dir = "./webrtc-test"
@@ -82,20 +89,55 @@ def iperf_connect(c, host, port=9000, type="tcp", wsize="1m", time="300s", inter
     c.sudo(cmd)
 
 
+@task(hosts=default_hosts)
+def start_chrome(c, dryrun=False):
+    print(sys.platform)
+    if sys.platform == "linux" or sys.platform == "linux2":
+        start_chrome_on_linux(c, dryrun)
+    elif sys.platform == "darwin":
+        start_chrome_on_mac(c, dryrun)
+    elif sys.platform == "win32":
+        start_chrome_on_win(c, dryrun)
+
+def build_chrome_cmd(chrome_path, video_file):
+    chrome_options = [
+        "--enable-logging --v=0",
+        "--vmodule=*/webrtc/*=1",
+        "--use-fake-device-for-media-stream",
+        "--use-file-for-fake-video-capture={}".format(video_file)
+    ]
+    ret = ""
+    for option in chrome_options:
+        ret = ret + " " + option
+    return "{} {} > chrome_debug.log 2>&1".format(chrome_path, ret)
+
+
 @task(hosts=remote_hosts)
-def start_chrome(c):
-    cmd = "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
-    cmd_options = """
-    --enable-logging=stderr
-    --v=1
-    --vmodule="*/webrtc/*=1"
-    --use-fake-device-for-media-stream
-    --use-file-for-fake-video-capture=/Users/yafan/Downloads/FourPeople_1280x720_60.y4m
-    > chrome_debug.log
-    2>&1
-    """
-    list_options = cmd_options.split("\n")
-    for the_option in list_options:
-        cmd = cmd + " " + the_option.strip()
-    print(cmd)
-    c.local(cmd)
+def start_chrome_on_linux(c, dryrun=False, chrome_path=None, video_file=None):
+    if not chrome_path:
+        chrome_path ="/home/ubuntu/chromium/src/out/Default/chrome"
+    if not video_file:
+        video_file = "/home/ubuntu/FourPeople_1280x720_60.y4m"
+
+    chrome_cmd = build_chrome_cmd(chrome_path, video_file)
+    if dryrun:
+        print(chrome_cmd)
+    else:
+        c.local(chrome_cmd)
+
+@task(hosts=remote_hosts)
+def start_chrome_on_win(c, dryrun=False, chrome_path=None, video_file=None):
+    pass
+
+@task(hosts=remote_hosts)
+def start_chrome_on_mac(c, dryrun=False, chrome_path=None, video_file=None):
+    if not chrome_path:
+        chrome_path = "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+    if not video_file:
+        video_file = "/Users/yafan/Downloads/FourPeople_1280x720_60.y4m"
+
+    chrome_cmd = build_chrome_cmd(chrome_path, video_file)
+    if dryrun:
+        print(chrome_cmd)
+    else:
+        c.local(chrome_cmd)
