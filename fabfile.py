@@ -7,14 +7,18 @@ import json
 import logging
 import requests
 import datetime
+import os, subprocess
 
-code_dir = os.getenv("WEBRTC_SRC")
 test_dir = "./webrtc-test"
-remote_dir = "/home/walter/workspace/webrtc/webrtc-checkout/src"
+local_webrtc_dir = os.getenv("WEBRTC_SRC")
+remote_chrome_dir = "/home/ubuntu/chromium/src"
+remote_webrtc_dir = remote_chrome_dir + "/third_party/webrtc/"
 
 default_hosts = ["localhost"]
-remote_hosts = ["ubuntu@10.224.122.40"]
+remote_hosts = ["ubuntu@10.224.85.39"]
 
+CHANGE_FILES = """
+"""
 
 def create_logger(filename, log2console=True, logLevel=logging.INFO,  logFolder= './logs'):
     # add log
@@ -53,27 +57,108 @@ def run_cmd(c, cmd, dryrun=False, inlocal=True):
         else:
             c.run(cmd)
 
+
+def getChangeList(usegit=False):
+    global CHANGE_FILES
+
+    code_dir = local_webrtc_dir
+
+    if usegit:
+        stdoutput = subprocess.check_output("cd %s && git status -s -uno" % code_dir, shell=True)
+        git_changed_files = stdoutput.decode('utf-8')
+
+        file_list = []
+        i = 0
+        for git_changed_file in git_changed_files.split('\n'):
+            filenames = git_changed_file.strip().split()
+
+            nameLen = len(filenames)
+            if nameLen > 1:
+                i = i + 1
+
+                if filenames[0] == 'D' or filenames[0] == 'R':
+                    continue
+                print("%d %s: %s" % (i, filenames[0], filenames[nameLen - 1]))
+                file_list.append(filenames[nameLen - 1].strip())
+
+        return file_list
+
+    change_files = []
+    change_list = CHANGE_FILES.split("\n")
+    for file in change_list:
+        change_file = file.strip()
+        if len(change_file) == 0 or change_file.startswith("#"):
+            continue
+        if ":" in change_file:
+            change_files.append(change_file.split(":")[1].strip())
+        else:
+            change_files.append(change_file)
+
+    return change_files
+
+
+@task(hosts=default_hosts)
+def change_files(c, usegit=False, printfile=True):
+
+    files = getChangeList(usegit)
+    i = 0
+    if printfile:
+        for file in files:
+            i = i + 1
+            print("{}. {}".format(i, file))
+    return files
+
+@task(hosts=remote_hosts)
+def upload_files(c, usegit=False, dryrun=False, files=""):
+
+    if files:
+        change_files = files.split(",")
+    else:
+        change_files = getChangeList(usegit)
+
+    for file in change_files:
+        if not file:
+            continue
+
+        src_file = "{}/{}".format(local_webrtc_dir, file)
+        dest_file = "{}/{}".format(remote_webrtc_dir, file)
+
+        if dryrun:
+            print("upload {} to {}".format(src_file, dest_file))
+        else:
+            result = c.put(src_file, remote=dest_file)
+            print("Uploaded {0.local} to {0.remote}".format(result))
+
 @task(hosts=default_hosts)
 def webrtc_update(c):
-    c.local("cd {} && git pull".format(code_dir))
+    c.local("cd {} && git pull".format(local_webrtc_dir))
 
 @task(hosts=default_hosts)
 def webrtc_build(c):
-    c.local("cd {} && ninja -C out/Default".format(code_dir))
+    c.local("cd {} && ninja -C out/Default".format(local_webrtc_dir))
 
 def modules_unittest(c, filter, report):
-    c.local("cd {}/out/Default && ./modules_unittests --gtest_filter=\"{}\" --gtest_output=\"xml:{}\"".format(code_dir, filter, report))
+    c.local("cd {}/out/Default && ./modules_unittests --gtest_filter=\"{}\" --gtest_output=\"xml:{}\"".format(local_webrtc_dir, filter, report))
 
 @task(hosts=default_hosts)
 def probe_test(c, filter="*Probe*", report="probe_test.xml"):
     modules_unittest(c, filter, report)
 
-
+"""
+mkdir ~/chromium && cd ~/chromium
+fetch --nohooks chromium
+cd src
+./build/install-build-deps.sh
+gclient runhooks
+gn args out/Default
+gn gen out/Default
+autoninja -C out/Default chrome
+"""
 @task(hosts=remote_hosts)
-def remote_build(c):
-    cmd = "cd {} && ninja -C out/Default".format(remote_dir)
+def chrome_build(c):
+    cmd = "cd {} && autoninja -C out/Default chrome".format(remote_chrome_dir)
     print(cmd)
-    c.run(cmd)      
+    c.run(cmd)
 
 
 @task(hosts=remote_hosts)
