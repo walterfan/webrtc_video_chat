@@ -5,6 +5,7 @@ from fabric import Connection
 import time
 import json
 import logging
+import requests
 
 CHROME_OPTIONS = """
     --enable-logging=stderr
@@ -51,6 +52,15 @@ def create_logger(filename, log2console=True, logLevel=logging.INFO,  logFolder=
 
 logger = create_logger("fabric_history")
 
+def run_cmd(c, cmd, dryrun=False, inlocal=True):
+    if dryrun:
+        print(cmd)
+    else:
+        if inlocal:
+            c.local(cmd)
+        else:
+            c.run(cmd)
+
 @task(hosts=default_hosts)
 def webrtc_update(c):
     c.local("cd {} && git pull".format(code_dir))
@@ -91,7 +101,8 @@ def iperf_connect(c, host, port=9000, type="tcp", wsize="1m", time="300s", inter
 
 @task(hosts=default_hosts)
 def start_chrome(c, dryrun=False):
-    print(sys.platform)
+    if dryrun:
+        print(sys.platform)
     if sys.platform == "linux" or sys.platform == "linux2":
         start_chrome_on_linux(c, dryrun)
     elif sys.platform == "darwin":
@@ -112,7 +123,7 @@ def build_chrome_cmd(chrome_path, video_file):
     return "{} {} > chrome_debug.log 2>&1".format(chrome_path, ret)
 
 
-@task(hosts=remote_hosts)
+@task(hosts=default_hosts)
 def start_chrome_on_linux(c, dryrun=False, chrome_path=None, video_file=None):
     if not chrome_path:
         chrome_path ="/home/ubuntu/chromium/src/out/Default/chrome"
@@ -125,11 +136,11 @@ def start_chrome_on_linux(c, dryrun=False, chrome_path=None, video_file=None):
     else:
         c.local(chrome_cmd)
 
-@task(hosts=remote_hosts)
+@task(hosts=default_hosts)
 def start_chrome_on_win(c, dryrun=False, chrome_path=None, video_file=None):
     pass
 
-@task(hosts=remote_hosts)
+@task(hosts=default_hosts)
 def start_chrome_on_mac(c, dryrun=False, chrome_path=None, video_file=None):
     if not chrome_path:
         chrome_path = "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
@@ -137,7 +148,18 @@ def start_chrome_on_mac(c, dryrun=False, chrome_path=None, video_file=None):
         video_file = "/Users/yafan/Downloads/FourPeople_1280x720_60.y4m"
 
     chrome_cmd = build_chrome_cmd(chrome_path, video_file)
-    if dryrun:
-        print(chrome_cmd)
-    else:
-        c.local(chrome_cmd)
+    run_cmd(c, cmd, dryrun)
+
+
+@task(hosts=default_hosts)
+def start_selenium_server(c, dryrun=False, selenium_path = "."):
+    file_name = "selenium-server-4.8.0.jar"
+    file_path = "{}/{}".format(selenium_path, file_name)
+    url = "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.8.0/" + file_name
+    if not os.path.exists(file_path):
+        print("download from {} ...".format(url))
+        response = requests.get(url)
+        with open(file_path, 'wb') as f:
+            f.write(response.content)
+    cmd = "nohup java -jar {} standalone > selenium_server.log 2>&1".format(file_path)
+    run_cmd(c, cmd, dryrun)
