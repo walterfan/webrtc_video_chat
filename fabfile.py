@@ -6,15 +6,7 @@ import time
 import json
 import logging
 import requests
-
-CHROME_OPTIONS = """
-    --enable-logging=stderr
-    --v=1
-    --vmodule="*/webrtc/*=1"
-    --use-fake-device-for-media-stream
-    --use-file-for-fake-video-capture={}
-    > chrome_debug.log 2>&1
-"""
+import datetime
 
 code_dir = os.getenv("WEBRTC_SRC")
 test_dir = "./webrtc-test"
@@ -112,15 +104,17 @@ def start_chrome(c, dryrun=False):
 
 def build_chrome_cmd(chrome_path, video_file):
     chrome_options = [
-        "--enable-logging --v=0",
+        "--enable-logging=stderr --v=1",
         "--vmodule=*/webrtc/*=1",
+        "--disable-web-security"
         "--use-fake-device-for-media-stream",
         "--use-file-for-fake-video-capture={}".format(video_file)
     ]
     ret = ""
     for option in chrome_options:
         ret = ret + " " + option
-    return "{} {} > chrome_debug.log 2>&1".format(chrome_path, ret)
+    current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M")
+    return "{} {} > chrome_debug_{}.log 2>&1".format(chrome_path, ret)
 
 
 @task(hosts=default_hosts)
@@ -158,5 +152,5 @@ def start_selenium_server(c, dryrun=False, selenium_path = "."):
         response = requests.get(url)
         with open(file_path, 'wb') as f:
             f.write(response.content)
-    cmd = "nohup java -jar {} standalone > selenium_server.log 2>&1".format(file_path)
+    cmd = "nohup java -jar {} standalone > selenium_server.log 2>&1 &".format(file_path)
     run_cmd(c, cmd, dryrun)
