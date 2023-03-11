@@ -110,11 +110,11 @@ def build_chrome_cmd(chrome_path, video_file):
         "--use-fake-device-for-media-stream",
         "--use-file-for-fake-video-capture={}".format(video_file)
     ]
-    ret = ""
+    cmd_options = ""
     for option in chrome_options:
-        ret = ret + " " + option
+        cmd_options = cmd_options + " " + option
     current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M")
-    return "{} {} > chrome_debug_{}.log 2>&1".format(chrome_path, ret)
+    return "{} {} > chrome_debug_{}.log 2>&1".format(chrome_path, cmd_options, current_time)
 
 
 @task(hosts=default_hosts)
