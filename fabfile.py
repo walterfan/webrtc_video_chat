@@ -114,8 +114,9 @@ def build_chrome_cmd(chrome_path, video_file):
     for option in chrome_options:
         cmd_options = cmd_options + " " + option
     current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M")
-    return "{} {} > chrome_debug_{}.log 2>&1".format(chrome_path, cmd_options, current_time)
-
+    cmd = "{} {} > chrome_debug_{}.log 2>&1".format(chrome_path, cmd_options, current_time)
+    print(cmd)
+    return cmd
 
 @task(hosts=default_hosts)
 def start_chrome_on_linux(c, dryrun=False, chrome_path=None, video_file=None):
