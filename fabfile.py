@@ -131,10 +131,7 @@ def start_chrome_on_linux(c, dryrun=False, chrome_path=None, video_file=None):
         video_file = "/home/ubuntu/FourPeople_1280x720_60.y4m"
 
     chrome_cmd = build_chrome_cmd(chrome_path, video_file)
-    if dryrun:
-        print(chrome_cmd)
-    else:
-        c.local(chrome_cmd)
+    run_cmd(c, chrome_cmd, dryrun)
 
 @task(hosts=default_hosts)
 def start_chrome_on_win(c, dryrun=False, chrome_path=None, video_file=None):
@@ -148,7 +145,7 @@ def start_chrome_on_mac(c, dryrun=False, chrome_path=None, video_file=None):
         video_file = "/Users/yafan/Downloads/FourPeople_1280x720_60.y4m"
 
     chrome_cmd = build_chrome_cmd(chrome_path, video_file)
-    run_cmd(c, cmd, dryrun)
+    run_cmd(c, chrome_cmd, dryrun)
 
 
 @task(hosts=default_hosts)
