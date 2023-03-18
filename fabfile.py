@@ -10,9 +10,10 @@ import datetime
 import os, subprocess
 
 test_dir = "./webrtc-test"
+depot_tool_dir = "/home/ubuntu/depot_tools"
 local_webrtc_dir = os.getenv("WEBRTC_SRC")
 remote_chrome_dir = "/home/ubuntu/chromium/src"
-remote_webrtc_dir = remote_chrome_dir + "/third_party/webrtc/"
+remote_webrtc_dir = remote_chrome_dir + "/third_party/webrtc"
 
 default_hosts = ["localhost"]
 remote_hosts = ["ubuntu@10.224.85.39"]
@@ -156,10 +157,8 @@ autoninja -C out/Default chrome
 """
 @task(hosts=remote_hosts)
 def chrome_build(c):
-    cmd = "cd {} && autoninja -C out/Default chrome".format(remote_chrome_dir)
-    print(cmd)
+    cmd = "cd {} && {}/autoninja -C out/Default chrome".format(remote_chrome_dir, depot_tool_dir)
     c.run(cmd)
-
 
 @task(hosts=remote_hosts)
 def iperf_listen(c, port=9000):
