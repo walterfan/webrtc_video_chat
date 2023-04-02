@@ -23,3 +23,8 @@ lal@ubuntu:/home/lal/webrtc_video_chat$
 
 * https://media.xiph.org/video/derf/
 
+* change the y4m to mp4
+
+```
+ffmpeg -i akiyo_qcif.y4m -c:v libx264 -preset ultrafast -qp 0 -pix_fmt yuv420p -movflags +faststart akiyo_qcif.mp4
+```

@@ -194,7 +194,7 @@ def build_chrome_cmd(chrome_path, video_file):
         "--enable-logging=stderr --v=1",
         "--vmodule=*/webrtc/*=1",
         "--use-fake-device-for-media-stream",
-        "--use-file-for-fake-video-capture={}".format(video_file)
+        "--use-file-for-fake-video-capture=\"{}\"".format(video_file)
     ]
     cmd_options = ""
     for option in chrome_options:
@@ -219,11 +219,14 @@ def start_chrome_on_win(c, dryrun=False, chrome_path=None, video_file=None):
     pass
 
 @task(hosts=default_hosts)
-def start_chrome_on_mac(c, dryrun=False, chrome_path=None, video_file=None):
-    if not chrome_path:
-        chrome_path = "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+def start_chrome_on_mac(c, dryrun=False, canary=True, chrome_path=None, video_file=None):
+    if canary:
+        chrome_path = "/Applications/Google\\ Chrome\\ Canary.app/Contents/MacOS/Google\\ Chrome\\ Canary"
+    else:
+        if not chrome_path:
+            chrome_path = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
     if not video_file:
-        video_file = "/Users/yafan/Downloads/FourPeople_1280x720_60.y4m"
+        video_file = "{}/media/{}".format(os.getcwd(), "akiyo_qcif.y4m")
 
     chrome_cmd = build_chrome_cmd(chrome_path, video_file)
     run_cmd(c, chrome_cmd, dryrun)
