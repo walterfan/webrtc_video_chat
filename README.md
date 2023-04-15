@@ -16,7 +16,7 @@ webrtc_service              docker-entrypoint.sh npm start   Up      0.0.0.0:800
 webrtcvideochat_chrome_1    /opt/bin/entry_point.sh          Up      0.0.0.0:5900->5900/tcp,:::5900->5900/tcp, 0.0.0.0:7900->7900/tcp,:::7900->7900/tcp
 webrtcvideochat_edge_1      /opt/bin/entry_point.sh          Up      0.0.0.0:5901->5900/tcp,:::5901->5900/tcp, 0.0.0.0:7901->7900/tcp,:::7901->7900/tcp
 webrtcvideochat_firefox_1   /opt/bin/entry_point.sh          Up      0.0.0.0:5902->5900/tcp,:::5902->5900/tcp, 0.0.0.0:7902->7900/tcp,:::7902->7900/tcp
-lal@ubuntu:/home/lal/webrtc_video_chat$
+
 ```
 
 # Test video file
