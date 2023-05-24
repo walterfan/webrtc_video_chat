@@ -1,0 +1,16 @@
+selenium
+pytest
+pytest-html
+pytest-ordering
+allure-pytest
+argparse
+Jinja2
+numpy>=1.15.0
+pandas>=0.22.0
+pytz>=2018.5
+requests>=2.18.4
+matplotlib>=3.6.2
+markdown
+PyYAML
+paramiko
+tabulate

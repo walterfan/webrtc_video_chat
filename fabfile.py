@@ -100,7 +100,16 @@ def getChangeList(usegit=False):
 
 @task(hosts=default_hosts)
 def change_files(c, usegit=False, printfile=True):
+    """get the change files list
 
+    Args:
+        c (connection): local or remote connection
+        usegit (bool, optional): use git status or not. Defaults to False.
+        printfile (bool, optional): print changed files or not. Defaults to True.
+
+    Returns:
+        list: changed files
+    """
     files = getChangeList(usegit)
     i = 0
     if printfile:
@@ -138,12 +147,19 @@ def webrtc_update(c):
 def webrtc_build(c):
     c.local("cd {} && ninja -C out/Default".format(local_webrtc_dir))
 
-def modules_unittest(c, filter, report):
+@task(hosts=default_hosts)
+def module_ut(c, filter, report="module_ut.xml"):
+    """usage: fab module-ut -f LossBasedBweV2Test*
+
+    Args:
+        filter (string): google test filter
+        report (string): google test report
+    """
     c.local("cd {}/out/Default && ./modules_unittests --gtest_filter=\"{}\" --gtest_output=\"xml:{}\"".format(local_webrtc_dir, filter, report))
 
 @task(hosts=default_hosts)
 def probe_test(c, filter="*Probe*", report="probe_test.xml"):
-    modules_unittest(c, filter, report)
+    module_ut(c, filter, report)
 
 """
 mkdir ~/chromium && cd ~/chromium
@@ -188,13 +204,15 @@ def start_chrome(c, dryrun=False):
 
 def build_chrome_cmd(chrome_path, video_file):
     chrome_options = [
-        "--ignore-certificate-errors",
+
+        '--use-fake-ui-for-media-stream',
+        '--use-fake-device-for-media-stream',
+        '--ignore-certificate-errors',
+        '--auto-select-desktop-capture-source=Entire screen',
         "--disable-web-security",
         "--no-default-browser-check",
         "--enable-logging=stderr --v=1",
         "--vmodule=*/webrtc/*=1",
-        "--use-fake-device-for-media-stream",
-        "--use-file-for-fake-video-capture=\"{}\"".format(video_file)
     ]
     cmd_options = ""
     for option in chrome_options:

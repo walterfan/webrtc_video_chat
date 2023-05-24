@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+mkdir -p ./logs
 uname_out="$(uname -s)"
 case "${uname_out}" in
     Linux*)     machine=linux;;
@@ -12,9 +12,11 @@ esac
 options=('--enable-logging=stderr' '--v=1' \
 '--vmodule="*/webrtc/*=1"' \
 '--vmodule="*third_party/libjingle/*=1"' \
+'--use-fake-ui-for-media-stream' \
 '--use-fake-device-for-media-stream' \
-'--use-file-for-fake-video-capture=/Users/yafan/Downloads/FourPeople_1280x720_60.y4m' \
-'> chrome_debug.log 2>&1')
+'--ignore-certificate-errors' \
+'--auto-select-desktop-capture-source=Entire screen' \
+'> ./logs/chrome_debug.log 2>&1')
 
 if [[ ${machine} == "linux" ]]; then
   cmd="/home/ubuntu/chromium/src/out/Default"

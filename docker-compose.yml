@@ -1,7 +1,7 @@
 version: "3"
 services:
   chrome:
-    image: selenium/node-chrome:4.8.0-20230123
+    image: selenium/node-chrome:4.8.3
     shm_size: 2gb
     ports:
       - "5900:5900"
@@ -17,7 +17,7 @@ services:
       - ${PWD}/logs:/home/seluser/logs
       - ${PWD}/logs:/home/seluser/Downloads
   edge:
-    image: selenium/node-edge:4.8.0-20230123
+    image: selenium/node-edge:4.8.3
     shm_size: 2gb
     ports:
       - "5901:5900"
@@ -33,7 +33,7 @@ services:
       - ${PWD}/logs:/home/seluser/logs
       - ${PWD}/logs:/home/seluser/Downloads
   firefox:
-    image: selenium/node-firefox:4.8.0-20230123
+    image: selenium/node-firefox:4.8.3
     shm_size: 2gb
     ports:
       - "5902:5900"
@@ -49,7 +49,7 @@ services:
       - ${PWD}/logs:/home/seluser/logs
       - ${PWD}/logs:/home/seluser/Downloads
   selenium-hub:
-    image: selenium/hub:4.8.0-20230123
+    image: selenium/hub:4.8.3
     container_name: selenium-hub
     ports:
       - "4442:4442"

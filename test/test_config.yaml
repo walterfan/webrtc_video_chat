@@ -1,0 +1,10 @@
+chrome_options:
+ - '--ignore-ssl-errors=yes'
+ - '--ignore-certificate-errors'
+ - '--allow-file-access-from-files'
+ - '--enable-local-file-accesses'
+ - '--enable-media-stream'
+ - '--disable-webrtc-encryption'
+ - '--no-default-browser-check'
+ - '--use-fake-ui-for-media-stream'
+ - '--use-fake-device-for-media-stream'
