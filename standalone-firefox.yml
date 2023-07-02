@@ -1,0 +1,39 @@
+version: "3"
+services:
+  firefox:
+    image: selenium/standalone-firefox:latest
+    shm_size: 2gb
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    volumes:
+      - ${PWD}/media:/home/seluser/media
+      - ${PWD}/logs:/home/seluser/logs
+      - ${PWD}/logs:/home/seluser/Downloads
+  firefox_video:
+    image: selenium/video:ffmpeg-4.3.1-20230421
+    volumes:
+      - /tmp/videos:/videos
+    depends_on:
+      - firefox
+    environment:
+      - DISPLAY_CONTAINER_NAME=firefox
+      - FILE_NAME=firefox_video.mp4
+  webrtc-service:
+    build: ./webrtc_service
+    container_name: webrtc_service
+    expose:
+        - "8001"
+        - "8002"
+        - "8003"
+        - "8043"
+    ports:
+        - "8001:8001"
+        - "8002:8002"
+        - "8003:8003"
+        - "8043:8043"
+    volumes:
+      - ${PWD}/media:/home/seluser/media
+      - ${PWD}/logs:/home/seluser/logs
+      - ${PWD}/logs:/home/seluser/Downloads
+      - ${PWD}/logs:/opt/webrtc_video_chat/logs

@@ -262,3 +262,25 @@ def start_selenium_server(c, dryrun=False, selenium_path = "."):
             f.write(response.content)
     cmd = "nohup java -jar {} standalone > selenium_server.log 2>&1 &".format(file_path)
     run_cmd(c, cmd, dryrun)
+
+@task(hosts=default_hosts)
+def start_selenium_nodes(c, dryrun=False, browser = "chrome"):
+    compose_yaml = "docker-compose.yml"
+    if browser == "chrome":
+        compose_yaml = "standalone-chrome.yml"
+
+    cmd = f"docker-compose -f {compose_yaml} up -d"
+    run_cmd(c, cmd, dryrun)
+    cmd2 = f"docker-compose -f {compose_yaml} ps"
+    run_cmd(c, cmd2, dryrun)
+
+@task(hosts=default_hosts)
+def stop_selenium_nodes(c, dryrun=False, browser = "chrome"):
+    compose_yaml = "docker-compose.yml"
+    if browser == "chrome":
+        compose_yaml = "standalone-chrome.yml"
+
+    cmd = f"docker-compose -f {compose_yaml} down"
+    run_cmd(c, cmd, dryrun)
+    cmd2 = f"docker-compose -f {compose_yaml} ps"
+    run_cmd(c, cmd2, dryrun)

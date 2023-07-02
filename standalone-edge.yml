@@ -1,0 +1,21 @@
+version: "3"
+services:
+  edge:
+    image: selenium/standalone-edge:latest
+    shm_size: 2gb
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    volumes:
+      - ${PWD}/media:/home/seluser/media
+      - ${PWD}/logs:/home/seluser/logs
+      - ${PWD}/logs:/home/seluser/Downloads
+  edge_video:
+    image: selenium/video:ffmpeg-4.3.1-20230421
+    volumes:
+      - /tmp/videos:/videos
+    depends_on:
+      - edge
+    environment:
+      - DISPLAY_CONTAINER_NAME=edge
+      - FILE_NAME=edge_video.mp4
