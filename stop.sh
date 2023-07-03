@@ -1,1 +1,1 @@
-docker-compose -f conifig/browser-nodes.yml down
+docker-compose -f config/browser-nodes.yml down
