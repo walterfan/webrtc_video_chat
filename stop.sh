@@ -1,1 +1,1 @@
-docker-compose down
+docker-compose -f conifig/browser-nodes down

@@ -265,9 +265,9 @@ def start_selenium_server(c, dryrun=False, selenium_path = "."):
 
 @task(hosts=default_hosts)
 def start_selenium_nodes(c, dryrun=False, browser = "chrome"):
-    compose_yaml = "docker-compose.yml"
+    compose_yaml = "config/browser-nodes.yml"
     if browser == "chrome":
-        compose_yaml = "standalone-chrome.yml"
+        compose_yaml = "config/chrome-nodes.yml"
 
     cmd = f"docker-compose -f {compose_yaml} up -d"
     run_cmd(c, cmd, dryrun)
@@ -276,9 +276,9 @@ def start_selenium_nodes(c, dryrun=False, browser = "chrome"):
 
 @task(hosts=default_hosts)
 def stop_selenium_nodes(c, dryrun=False, browser = "chrome"):
-    compose_yaml = "docker-compose.yml"
+    compose_yaml = "config/browser-nodes.yml"
     if browser == "chrome":
-        compose_yaml = "standalone-chrome.yml"
+        compose_yaml = "config/chrome-nodes.yml"
 
     cmd = f"docker-compose -f {compose_yaml} down"
     run_cmd(c, cmd, dryrun)

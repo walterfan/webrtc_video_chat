@@ -20,7 +20,7 @@ services:
       - DISPLAY_CONTAINER_NAME=chrome
       - FILE_NAME=chrome_video.mp4
   webrtc-service:
-    build: ./webrtc_service
+    build: ../webrtc_service
     container_name: webrtc_service
     expose:
         - "8001"

@@ -1,6 +1,6 @@
 version: "3"
 services:
-  chrome:
+  chrome1:
     image: selenium/node-chrome:4.8.3
     shm_size: 2gb
     ports:
@@ -16,8 +16,8 @@ services:
       - ${PWD}/media:/home/seluser/media
       - ${PWD}/logs:/home/seluser/logs
       - ${PWD}/logs:/home/seluser/Downloads
-  edge:
-    image: selenium/node-edge:4.8.3
+  chrome2:
+    image: selenium/node-chrome:4.8.3
     shm_size: 2gb
     ports:
       - "5901:5900"
@@ -32,12 +32,44 @@ services:
       - ${PWD}/media:/home/seluser/media
       - ${PWD}/logs:/home/seluser/logs
       - ${PWD}/logs:/home/seluser/Downloads
-  firefox:
-    image: selenium/node-firefox:4.8.3
+  chrome3:
+    image: selenium/node-chrome:4.8.3
     shm_size: 2gb
     ports:
       - "5902:5900"
       - "7902:7900"
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    volumes:
+      - ${PWD}/media:/home/seluser/media
+      - ${PWD}/logs:/home/seluser/logs
+      - ${PWD}/logs:/home/seluser/Downloads
+  edge:
+    image: selenium/node-edge:4.8.3
+    shm_size: 2gb
+    ports:
+      - "5903:5900"
+      - "7903:7900"
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    volumes:
+      - ${PWD}/media:/home/seluser/media
+      - ${PWD}/logs:/home/seluser/logs
+      - ${PWD}/logs:/home/seluser/Downloads
+  firefox:
+    image: selenium/node-firefox:4.8.3
+    shm_size: 2gb
+    ports:
+      - "5904:5900"
+      - "7904:7900"
     depends_on:
       - selenium-hub
     environment:
@@ -56,7 +88,7 @@ services:
       - "4443:4443"
       - "4444:4444"
   webrtc-service:
-    build: ./webrtc_service
+    build: ../webrtc_service
     container_name: webrtc_service
     expose:
         - "8001"
