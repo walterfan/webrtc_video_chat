@@ -284,3 +284,14 @@ def stop_selenium_nodes(c, dryrun=False, browser = "chrome"):
     run_cmd(c, cmd, dryrun)
     cmd2 = f"docker-compose -f {compose_yaml} ps"
     run_cmd(c, cmd2, dryrun)
+
+
+@task(hosts=default_hosts)
+def start_portainer(c):
+    cmd = f"docker-compose -f config/opt.yml up -d"
+    run_cmd(c, cmd)
+
+@task(hosts=default_hosts)
+def stop_portainer(c):
+    cmd = f"docker-compose -f config/opt.yml down"
+    run_cmd(c, cmd)
